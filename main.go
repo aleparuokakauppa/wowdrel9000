@@ -20,9 +20,7 @@ type Guess struct {
 
 type Letter struct {
     Char rune `json:"char"`
-    Match bool `json:"match"`
-    Close bool `json:"close"`
-    Miss bool `json:"miss"`
+    Status string `json:"status"`
 }
 
 type GuessResponse struct {
@@ -66,20 +64,24 @@ func gameServerHandler() {
 
 func compareGuess(guess Guess) [5]Letter {
     letters := new([5]Letter)
-    for _, letter := range letters {
-        letter.Miss = true;
-    }
 
     for guessIndex, guessRune := range guess.Guess {
+        guessMatch := false
+        guessClose := false
         for answerIndex, answerRune := range answer {
             if guessRune == answerRune {
                 if guessIndex == answerIndex {
-                    letters[guessIndex].Match = true;
-                    letters[guessIndex].Miss = false;
+                    guessMatch = true;
                 }
-                letters[guessIndex].Close = true;
-                letters[guessIndex].Miss = false;
+                guessClose = true;
             }
+        }
+        if guessMatch == true {
+            letters[guessIndex].Status = "match"
+        } else if guessClose == true {
+            letters[guessIndex].Status = "close"
+        } else {
+            letters[guessIndex].Status = "miss"
         }
     }
     return *letters
@@ -119,7 +121,7 @@ func handleGuess(w http.ResponseWriter, r *http.Request) {
 
     // Check for negative win
     for _, letter := range letters {
-        if letter.Miss == true {
+        if letter.Status == "miss" {
             response.Win = false
         }
     }
@@ -127,6 +129,7 @@ func handleGuess(w http.ResponseWriter, r *http.Request) {
     responseData, err := json.Marshal(response)
     if err != nil {
         http.Error(w, "Server failed to marshal response JSON", http.StatusInternalServerError)
+        log.Fatal(err)
     }
 
     w.Header().Set("Content-Type", "application/json")

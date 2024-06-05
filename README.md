@@ -1,8 +1,7 @@
 # wowdrel9000
 A wordle clone
 
-## Server API documentation
-
+## Server API docs
 **Endpoint**: `/guess`
 **Method**: `POST`
 **Description**: Post a JSON request to the server. Expect a JSON response.
@@ -21,33 +20,23 @@ A wordle clone
     "letters": [
         {
             "char": "T",
-            "match": false,
-            "close": true,
-            "miss": false
+            "status": "miss"
         },
         {
             "char": "R",
-            "match": true,
-            "close": true,
-            "miss": false
+            "status": "match"
         },
         {
             "char": "E",
-            "match": false,
-            "close": false,
-            "miss": true
+            "status": "close"
         },
         {
             "char": "E",
-            "match": false,
-            "close": true,
-            "miss": true
+            "status": "close"
         },
         {
             "char": "S",
-            "match": false,
-            "close": true,
-            "miss": true
+            "status": "miss"
         },
     ]
 }
