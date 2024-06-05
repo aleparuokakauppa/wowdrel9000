@@ -114,14 +114,24 @@ func handleGuess(w http.ResponseWriter, r *http.Request) {
     response := GuessResponse{
         Version: 1,
         Win: true,
+        Letters: letters,
     }
 
+    // Check for negative win
     for _, letter := range letters {
         if letter.Miss == true {
             response.Win = false
         }
-
     }
+
+    responseData, err := json.Marshal(response)
+    if err != nil {
+        http.Error(w, "Server failed to marshal response JSON", http.StatusInternalServerError)
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    w.Write(responseData)
 }
 
 func main() {
