@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -23,8 +22,9 @@ func getWords(infile string) ([]string, error) {
 
     var words []string
 
-    fileBuf := bufio.NewReader(wordFile)
-    for line, err := fileBuf.ReadString('\n'); err != io.EOF; {
+    scanner := bufio.NewScanner(wordFile)
+    for scanner.Scan() {
+        line := scanner.Text()
         if (len(line) != 5) {
             return nil, fmt.Errorf("File contained word that wasn't 5 chars long!: %s", line)
         }
@@ -39,7 +39,6 @@ func gameServerHandler() {
     if err != nil {
         log.Fatal(err)
     }
-
     randWord := words[rand.Intn(len(words))]
 }
 
