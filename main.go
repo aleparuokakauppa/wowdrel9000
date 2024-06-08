@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strings"
 )
 
 var answer string
@@ -48,7 +49,7 @@ func getWords(infile string) ([]string, error) {
         if (len(line) != 5) {
             return nil, fmt.Errorf("File contained word that wasn't 5 chars long!: %s", line)
         }
-        words = append(words, line)
+        words = append(words, strings.ToUpper(line))
     }
 
     return words, nil
@@ -66,6 +67,7 @@ func compareGuess(guess Guess) [5]Letter {
     letters := new([5]Letter)
 
     for guessIndex, guessRune := range guess.Guess {
+        letters[guessIndex].Char = guessRune
         guessMatch := false
         guessClose := false
         for answerIndex, answerRune := range answer {

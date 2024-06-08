@@ -4,9 +4,6 @@ class GuessLetterStack {
         this.maxSize = maxSize;
         this.frontIndex = 0;
         this.backIndex = 0;
-
-        // This is set to true when the
-        // user wants to guess
         this.guess = false;
     }
 
@@ -33,7 +30,7 @@ class GuessLetterStack {
     }
 
     toString() {
-        return this.letters.join(" ");
+        return this.letters.join('');
     }
 
     toArray() {
@@ -72,12 +69,12 @@ async function handleKeyEvent(keyHistory) {
         }
     }
     else {
-        keyHistory.insertChar(keyEvent.key);
+        keyHistory.insertChar(keyEvent.key.toUpperCase());
     }
     return keyHistory
 }
 
-function drawTiles(keyHistory, tileRow) {
+function drawTileChars(keyHistory, tileRow) {
     let chars = keyHistory.toArray();
     let tiles = tileRow.children;
     for (let index = 0; index < chars.length; index++) {
@@ -85,36 +82,93 @@ function drawTiles(keyHistory, tileRow) {
     }
 }
 
-function checkWin(keyHistory) {
+function drawTileColors(serverResponse, tileRow) {
+    let tiles = tileRow.children;
+    serverResponse.letters.forEach((responseLetter, responseIndex) => {
+        tiles[responseIndex].classList.remove('grid-item-blank');
+        switch(responseLetter.status) {
+            case "match":
+                tiles[responseIndex].classList.add('grid-item-green');
+                break;
+            case "close":
+                tiles[responseIndex].classList.add('grid-item-yellow');
+                break;
+            case "miss":
+                tiles[responseIndex].classList.add('grid-item-gray');
+                break;
+        }
+    })
+}
 
+async function checkWin(guessWord) {
+    const requestData = {
+        version: 1,
+        guess: guessWord // This is a string
+    }
+    return fetch('http://localhost:8080/guess', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        return response.json()
+    })
+    .then(data => {
+        return data
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Error: ' + error);
+        throw error;
+    })
+}
+
+function notifyPlayer(message) {
+    var popup = document.getElementById('popup');
+    popup.textContent = message
+    popup.style.display = 'block';
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 3000) // Hide popup after 3 seconds
 }
 
 async function gameHandler() {
     let currRow = 1;
     let maxRows = 6;
+    let win = false;
 
-    var keyHistory = new GuessLetterStack(5)
+    var guessLetterStack = new GuessLetterStack(5)
 
     // Main game loop
-    while (currRow <= maxRows) {
-        keyHistory = await handleKeyEvent(keyHistory);
-        if (keyHistory.guess === true) {
+    while (currRow <= maxRows && win === false) {
+        console.log("state of win at start: ", win)
+        guessLetterStack = await handleKeyEvent(guessLetterStack);
+        var currRowObj = document.getElementById('row-' + currRow);
+        drawTileChars(guessLetterStack, currRowObj);
+        if (guessLetterStack.guess === true) {
             // Check if word is a real word
-            // Send the request for checking the correct answer
+            // TODO don't call this as an async function...
+            checkWin(guessLetterStack.toString())
+            .then(data => {
+                drawTileColors(data, currRowObj);
+                win = data.win;
+                console.log("win set to: ", data.win)
+            })
+            .catch(error => {
+                console.error('Error in checkWin:', error);
+            })
             currRow++;
-            keyHistory.clear();
-        } else {
-            var currRowObj = document.getElementById('row-' + currRow);
-            drawTiles(keyHistory, currRowObj);
+            guessLetterStack.clear();
         }
+        console.log("state of win at end: ", win)
     }
-
-    var popup = document.getElementById('popup');
-    popup.textContent = "Game over!"
-    popup.style.display = 'block';
-    setTimeout(() => {
-        popup.style.display = 'none';
-    }, 3000) // Hide popup after 3 seconds
+    if (win == true) {
+        notifyPlayer("You won!")
+    } else {
+        notifyPlayer("You lost!")
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
