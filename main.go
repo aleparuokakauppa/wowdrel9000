@@ -55,12 +55,13 @@ func getWords(infile string) ([]string, error) {
     return words, nil
 }
 
-func gameServerHandler() {
+func setRandomWord() {
     words, err := getWords("words.txt")
     if err != nil {
         log.Fatal(err)
     }
     answer = words[rand.Intn(len(words))]
+    log.Println("Answer set to ", answer)
 }
 
 func compareGuess(guess Guess) [5]Letter {
@@ -123,7 +124,7 @@ func handleGuess(w http.ResponseWriter, r *http.Request) {
 
     // Check for negative win
     for _, letter := range letters {
-        if letter.Status == "miss" {
+        if letter.Status == "miss" || letter.Status == "close" {
             response.Win = false
         }
     }
@@ -146,7 +147,7 @@ func main() {
     fs := http.FileServer(http.Dir("web"))
     http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-    go gameServerHandler()
+    setRandomWord()
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

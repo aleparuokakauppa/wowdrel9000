@@ -1,0 +1,44 @@
+.game-grid-container {
+    background: #111;
+    gap: 20px;
+    padding: 20px;
+}
+
+.game-row-container {
+    display: grid;
+    grid-template-columns: repeat(5, 80px);
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    column-gap: 8px;
+}
+
+.grid-item {
+    font-family: sans-serif;
+    font-size: 34px;
+    height: 80px;
+    width: 80px;
+    display: flex;
+    color: white;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+}
+
+.grid-item-blank {
+    background-color: #111;
+    border: 1px dashed #ccc;
+}
+
+.grid-item-gray {
+    background-color: #222;
+}
+
+.grid-item-yellow {
+    background-color: #ff0;
+}
+
+.grid-item-green {
+    background-color: #0f0;
+}

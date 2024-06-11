@@ -1,0 +1,44 @@
+.key-row-container {
+    padding: 20px;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.key-row {
+    display: grid;
+    grid-template-columns: repeat(10, 52px);
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    column-gap: 8px;
+}
+
+.key-item {
+    font-family: sans-serif;
+    font-size: 34px;
+    height: 48px;
+    width: 48px;
+    border: 1px solid #ccc;
+    display: flex;
+    color: white;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.key-item-green {
+    background-color: green;
+}
+
+.key-item-yellow {
+    background-color: yellow;
+}
+
+.key-item-gray {
+    background-color: gray;
+}
+
+.key-item-blank {
+    border: 1px dashed #ccc;
+}

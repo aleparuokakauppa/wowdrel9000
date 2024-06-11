@@ -6,57 +6,97 @@
 
     <title>Wowdrel9000</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/game-grid-styles.css">
+    <link rel="stylesheet" href="/static/key-item-styles.css">
 </head>
+
 <body>
 <main>
     <div class="title">Wowdrel9000</div>
     <div id="popup">
-        <p></p>
+        <div id="popup-message"></div>
+        <button onclick="location.reload()">Reset game</button>
+        <button onclick="clearNotifyPlayer()">Close notification</button>
     </div>
     <div class="game-container">
         <div class="game-grid-container">
-            <div id="row-1" class="game-row">
+            <div id="row-1" class="game-row-container">
                 <div class="grid-item grid-item-blank" style="animation-delay: 0ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 100ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 200ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 300ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 400ms;"></div>
             </div>
-            <div id="row-2" class="game-row">
+            <div id="row-2" class="game-row-container">
                 <div class="grid-item grid-item-blank" style="animation-delay: 0ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 100ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 200ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 300ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 400ms;"></div>
             </div>
-            <div id="row-3" class="game-row">
+            <div id="row-3" class="game-row-container">
                 <div class="grid-item grid-item-blank" style="animation-delay: 0ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 100ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 200ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 300ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 400ms;"></div>
             </div>
-            <div id="row-4" class="game-row">
+            <div id="row-4" class="game-row-container">
                 <div class="grid-item grid-item-blank" style="animation-delay: 0ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 100ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 200ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 300ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 400ms;"></div>
             </div>
-            <div id="row-5" class="game-row">
+            <div id="row-5" class="game-row-container">
                 <div class="grid-item grid-item-blank" style="animation-delay: 0ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 100ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 200ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 300ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 400ms;"></div>
             </div>
-            <div id="row-6" class="game-row">
+            <div id="row-6" class="game-row-container">
                 <div class="grid-item grid-item-blank" style="animation-delay: 0ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 100ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 200ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 300ms;"></div>
                 <div class="grid-item grid-item-blank" style="animation-delay: 400ms;"></div>
             </div>
+        </div>
+    </div>
+
+    <div class="key-row-container">
+        <div class="key-row">
+            <div id="key-Q" class="key-item key-item-blank">Q</div>
+            <div id="key-W" class="key-item key-item-blank">W</div>
+            <div id="key-E" class="key-item key-item-blank">E</div>
+            <div id="key-R" class="key-item key-item-blank">R</div>
+            <div id="key-T" class="key-item key-item-blank">T</div>
+            <div id="key-Y" class="key-item key-item-blank">Y</div>
+            <div id="key-U" class="key-item key-item-blank">U</div>
+            <div id="key-I" class="key-item key-item-blank">I</div>
+            <div id="key-O" class="key-item key-item-blank">O</div>
+            <div id="key-P" class="key-item key-item-blank">P</div>
+        </div>
+        <div class="key-row">
+            <div id="key-A" class="key-item key-item-blank">A</div>
+            <div id="key-S" class="key-item key-item-blank">S</div>
+            <div id="key-D" class="key-item key-item-blank">D</div>
+            <div id="key-F" class="key-item key-item-blank">F</div>
+            <div id="key-G" class="key-item key-item-blank">G</div>
+            <div id="key-H" class="key-item key-item-blank">H</div>
+            <div id="key-J" class="key-item key-item-blank">J</div>
+            <div id="key-K" class="key-item key-item-blank">K</div>
+            <div id="key-L" class="key-item key-item-blank">L</div>
+        </div>
+        <div class="key-row">
+            <div id="key-Z" class="key-item key-item-blank">Z</div>
+            <div id="key-X" class="key-item key-item-blank">X</div>
+            <div id="key-C" class="key-item key-item-blank">C</div>
+            <div id="key-V" class="key-item key-item-blank">V</div>
+            <div id="key-B" class="key-item key-item-blank">B</div>
+            <div id="key-N" class="key-item key-item-blank">N</div>
+            <div id="key-M" class="key-item key-item-blank">M</div>
         </div>
     </div>
 

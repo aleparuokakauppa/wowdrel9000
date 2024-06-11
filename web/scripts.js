@@ -100,6 +100,27 @@ function drawTileColors(serverResponse, tileRow) {
     })
 }
 
+function drawLetterColors(serverResponse) {
+    serverResponse.letters.forEach((responseLetter) => {
+        let letterContainer = document.getElementById('key-' + String.fromCharCode(responseLetter.char))
+        switch(responseLetter.status) {
+            case "match":
+                letterContainer.classList.remove('key-item-blank');
+                letterContainer.classList.remove('key-item-yellow');
+                letterContainer.classList.add('key-item-green');
+                break;
+            case "close":
+                letterContainer.classList.remove('key-item-blank');
+                letterContainer.classList.add('key-item-yellow');
+                break;
+            case "miss":
+                letterContainer.classList.remove('key-item-blank');
+                letterContainer.classList.add('key-item-gray');
+                break;
+        }
+    })
+}
+
 async function checkWin(guessWord) {
     const requestData = {
         version: 1,
@@ -126,12 +147,19 @@ async function checkWin(guessWord) {
 }
 
 function notifyPlayer(message) {
+    document.getElementById('popup-message').textContent = message;
+    document.getElementById('popup').style.display = 'flex';
+}
+
+function clearNotifyPlayer() {
+    document.getElementById('popup-message').textContent = '';
+    document.getElementById('popup').style.display = 'none';
+}
+
+function announceResult(message) {
     var popup = document.getElementById('popup');
     popup.textContent = message
     popup.style.display = 'block';
-    setTimeout(() => {
-        popup.style.display = 'none';
-    }, 3000) // Hide popup after 3 seconds
 }
 
 async function gameHandler() {
@@ -143,18 +171,16 @@ async function gameHandler() {
 
     // Main game loop
     while (currRow <= maxRows && win === false) {
-        console.log("state of win at start: ", win)
         guessLetterStack = await handleKeyEvent(guessLetterStack);
         var currRowObj = document.getElementById('row-' + currRow);
         drawTileChars(guessLetterStack, currRowObj);
         if (guessLetterStack.guess === true) {
             // Check if word is a real word
-            // TODO don't call this as an async function...
-            checkWin(guessLetterStack.toString())
+            await checkWin(guessLetterStack.toString())
             .then(data => {
                 drawTileColors(data, currRowObj);
+                drawLetterColors(data);
                 win = data.win;
-                console.log("win set to: ", data.win)
             })
             .catch(error => {
                 console.error('Error in checkWin:', error);
@@ -162,7 +188,6 @@ async function gameHandler() {
             currRow++;
             guessLetterStack.clear();
         }
-        console.log("state of win at end: ", win)
     }
     if (win == true) {
         notifyPlayer("You won!")
