@@ -11,7 +11,7 @@ import (
 )
 
 func MainPageHandler(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, "./src/index.html")
+    http.ServeFile(w, r, "../src/index.html")
 }
 
 func GuessHandler(w http.ResponseWriter, r *http.Request) {
@@ -88,8 +88,9 @@ func RealWordHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Wrong protocol version. Want version 1.", http.StatusBadRequest)
     }
 
-    result, err := logic.CheckRealWord(guess.Guess, "../../data/words.txt")
+    result, err := logic.CheckRealWord(guess.Guess)
     if err != nil {
+        log.Fatal(err)
         http.Error(w, "Server couldn't parse the file for real words.", http.StatusInternalServerError)
     }
     

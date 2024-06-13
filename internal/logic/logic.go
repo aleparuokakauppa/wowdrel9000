@@ -12,12 +12,12 @@ import (
 )
 
 var answer string
+const WordFile string =  "../data/words.txt"
 
-func CheckRealWord(clientWord string ,infile string) (bool, error){
-    wordFile, err := os.Open(infile)
+func CheckRealWord(clientWord string) (bool, error){
+    wordFile, err := os.Open(WordFile)
     if err != nil {
-        log.Println("Can't open wordfile: ", err)
-        return false, err
+        return false, fmt.Errorf("Cannot open wordfile: %v", err)
     }
     defer wordFile.Close()
     scanner := bufio.NewScanner(wordFile)
@@ -30,8 +30,8 @@ func CheckRealWord(clientWord string ,infile string) (bool, error){
     return false, nil
 }
 
-func SetRandomWord(infile string) {
-    words, err := GetWords(infile)
+func SetRandomWord() {
+    words, err := GetWords()
     if err != nil {
         log.Fatal(err)
     }
@@ -39,10 +39,10 @@ func SetRandomWord(infile string) {
     log.Println("Answer set to ", answer)
 }
 
-func GetWords(infile string) ([]string, error) {
-    wordFile, err := os.Open(infile)
+func GetWords() ([]string, error) {
+    wordFile, err := os.Open(WordFile)
     if err != nil {
-        return nil, err
+        return nil, fmt.Errorf("GetWords | Cannot open wordfile: %v", err)
     }
     defer wordFile.Close()
 
