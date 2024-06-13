@@ -1,0 +1,55 @@
+#popup {
+    display: none;
+    position: fixed;
+    justify-items: center;
+    text-align: center;
+    height: auto;
+    width: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    background-color: #fff;
+    border: 2px solid #333;
+    box-shadow: 0 0 10px #eee;
+    z-index: 9999;
+}
+
+#small-popup {
+    font-family: sans-serif;
+    font-size: 32px;
+    display: none;
+    position: fixed;
+    justify-items: center;
+    text-align: center;
+    height: auto;
+    width: auto;
+    top: 20%;
+    left: 50%;
+    background-color: #f00;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    border: 2px solid #222;
+    box-shadow: 0 0 10px #eee;
+    z-index: 9999;
+}
+
+#popup-message {
+    font-size: 38px;
+    text-align: left;
+}
+
+.popup-button-container {
+    display: grid;
+    grid-template-columns: repeat(3, 52px);
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    column-gap: 10px;
+}
+
+.popup-button {
+    font-family: sans-serif;
+    font-size: 44px;
+    width: 60px;
+}

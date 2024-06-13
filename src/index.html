@@ -5,18 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 
     <title>Wowdrel9000</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <link rel="stylesheet" href="/static/game-grid-styles.css">
-    <link rel="stylesheet" href="/static/key-item-styles.css">
+
+    <script type="module" src="/src/js/index.js"></script>
+    <script src="/src/js/popupUtils.js"></script>
+
+    <link rel="stylesheet" href="/src/styles/styles.css">
+    <link rel="stylesheet" href="/src/styles/game-grid-styles.css">
+    <link rel="stylesheet" href="/src/styles/key-item-styles.css">
+    <link rel="stylesheet" href="/src/styles/popup.css">
 </head>
 
 <body>
 <main>
     <div class="title">Wowdrel9000</div>
+    <div id="small-popup">
+    </div>
+
     <div id="popup">
-        <div id="popup-message"></div>
-        <button onclick="location.reload()">Reset game</button>
-        <button onclick="clearNotifyPlayer()">Close notification</button>
+        <ul>
+            <div id="popup-message"></div>
+            <div class="popup-button-container"> 
+                <div class="popup-button"> 
+                    <button onclick="location.reload()">Reset game</button>
+                </div>
+                <div class="popup-button"> 
+                    <button onclick="clearNotifyPlayer()">Close notification</button>
+                </div>
+            </div>
+        </ul>
     </div>
     <div class="game-container">
         <div class="game-grid-container">
@@ -99,8 +115,6 @@
             <div id="key-M" class="key-item key-item-blank">M</div>
         </div>
     </div>
-
-    <script src="/static/scripts.js"></script>
 </main>
 </body>
 

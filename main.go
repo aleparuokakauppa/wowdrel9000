@@ -13,6 +13,7 @@ import (
 )
 
 var answer string
+var wordFile string
 
 type Guess struct {
     Version int `json:"version"`
@@ -30,8 +31,13 @@ type GuessResponse struct {
     Letters [5]Letter `json:"letters"`
 }
 
+type RealWordResponse struct {
+    Version int `json:"version"`
+    IsReal bool `json:"isreal"`
+}
+
 func servePage(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, "web/index.html")
+    http.ServeFile(w, r, "./src/index.html")
 }
 
 func getWords(infile string) ([]string, error) {
@@ -55,8 +61,25 @@ func getWords(infile string) ([]string, error) {
     return words, nil
 }
 
-func setRandomWord() {
-    words, err := getWords("words.txt")
+func checkRealWord(clientWord string ,infile string) (bool, error){
+    wordFile, err := os.Open(infile)
+    if err != nil {
+        log.Println("Can't open wordfile: ", err)
+        return false, err
+    }
+    defer wordFile.Close()
+    scanner := bufio.NewScanner(wordFile)
+    for scanner.Scan() {
+        line := scanner.Text()
+        if (clientWord == strings.ToUpper(line)) {
+            return true, nil
+        }
+    }
+    return false, nil
+}
+
+func setRandomWord(infile string) {
+    words, err := getWords(infile)
     if err != nil {
         log.Fatal(err)
     }
@@ -88,6 +111,51 @@ func compareGuess(guess Guess) [5]Letter {
         }
     }
     return *letters
+}
+
+func handleRealWord(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Invalid request method", http.StatusBadRequest)
+        return
+    }
+
+    body, err := io.ReadAll(r.Body)
+    if err != nil {
+        http.Error(w, "Unable to read request body", http.StatusBadRequest)
+        return
+    }
+    defer r.Body.Close()
+
+    var guess Guess
+    err = json.Unmarshal(body, &guess) 
+    if err != nil {
+        http.Error(w, "Unable to parse JSON data", http.StatusBadRequest)
+        return
+    }
+
+    if guess.Version != 1 {
+        http.Error(w, "Wrong protocol version. Want version 1.", http.StatusBadRequest)
+    }
+
+    result, err := checkRealWord(guess.Guess, wordFile)
+    if err != nil {
+        http.Error(w, "Server couldn't parse the file for real words.", http.StatusInternalServerError)
+    }
+    
+    response := RealWordResponse{
+        Version: 1,
+        IsReal: result,
+    }
+
+    responseData, err := json.Marshal(response)
+    if err != nil {
+        http.Error(w, "Server failed to marshal response JSON", http.StatusInternalServerError)
+        log.Fatal(err)
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    w.Write(responseData)
 }
 
 func handleGuess(w http.ResponseWriter, r *http.Request) {
@@ -143,11 +211,14 @@ func handleGuess(w http.ResponseWriter, r *http.Request) {
 func main() {
     http.HandleFunc("/", servePage)
     http.HandleFunc("/guess", handleGuess)
+    http.HandleFunc("/realWord", handleRealWord)
 
-    fs := http.FileServer(http.Dir("web"))
-    http.Handle("/static/", http.StripPrefix("/static/", fs))
+    fs := http.FileServer(http.Dir("src"))
+    http.Handle("/src/", http.StripPrefix("/src/", fs))
 
-    setRandomWord()
+    wordFile = "words.txt"
+
+    setRandomWord(wordFile)
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

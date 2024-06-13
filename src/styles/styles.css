@@ -1,0 +1,15 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.title {
+    font-size: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    background: #111;
+}
