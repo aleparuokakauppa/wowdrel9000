@@ -1,6 +1,8 @@
 # wowdrel9000
-A wordle clone
+A simple wordle clone with server-client architecture.
 
+# Goal
+- Learn how to use client-side javascript
 
 ## Screenshot
 ![Screenshot](https://github.com/aleparuokakauppa/wowdrel9000/blob/main/data/screenshot.jpg?raw=true)
