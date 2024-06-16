@@ -5,37 +5,60 @@ import { checkRealWord, checkWin } from '/src/js/apiClients.js'
 import { smallNotify, notifyPlayerWin, notifyPlayerLoss } from '/src/js/notify.js';
 import { drawLetterColors } from '/src/js/keypadUtils.js';
 
+
+var currRow = 1;
+var maxRows = 6;
+var win = false;
+var guessedWords = []
+
+var guessLetterStack = new GuessLetterStack(5)
+
+let getCurrRowObj = () => {
+    return document.getElementById('row-' + currRow);
+}
+
+async function handleGuess() {
+    let alreadyGuessed = (guessedWords.indexOf(guessLetterStack.toString()) > -1)
+    if (alreadyGuessed === true) {
+        guessLetterStack = new GuessLetterStack(5)
+        drawTileChars(guessLetterStack, getCurrRowObj())
+        smallNotify("Word is already guessed.")
+        return false;
+    }
+
+    let isRealWord = await checkRealWord(guessLetterStack.toString());
+    if (isRealWord === false) {
+        guessLetterStack = new GuessLetterStack(5)
+        drawTileChars(guessLetterStack, getCurrRowObj())
+        smallNotify("Not a real word.")
+        return false;
+    }
+
+    // This includes guess accuracy per letter
+    let winResponseJSON = await checkWin(guessLetterStack.toString());
+
+    drawTileColors(winResponseJSON, getCurrRowObj())
+    drawLetterColors(winResponseJSON)
+    guessLetterStack.clear();
+
+    win = winResponseJSON.win;
+    return true;
+}
+
 async function gameHandler() {
-    let currRow = 1;
-    let maxRows = 6;
-    let win = false;
-    let guessedWords = []
-
-    var guessLetterStack = new GuessLetterStack(5)
-
     // Main game loop
     while (currRow <= maxRows && win === false) {
-        var currRowObj = document.getElementById('row-' + currRow);
-        drawTileChars(guessLetterStack, currRowObj);
+
+        drawTileChars(guessLetterStack, getCurrRowObj());
+
         guessLetterStack = await handleKeyEvent(guessLetterStack);
-        if (guessLetterStack.guess === true) {
-            var result = await checkRealWord(guessLetterStack.toString());
-            if (result) {
-                await checkWin(guessLetterStack.toString())
-                    .then(data => {
-                        drawTileColors(data, currRowObj);
-                        drawLetterColors(data);
-                        win = data.win;
-                    })
-                    .catch(error => {
-                        console.error('Error in checkWin:', error);
-                    })
+
+        if (guessLetterStack.guess) {
+            let word = guessLetterStack.toString();
+            let nextGuess = await handleGuess();
+            if (nextGuess === true) {
+                guessedWords.push(word)
                 currRow++;
-                guessLetterStack.clear();
-            } else {
-                guessLetterStack = new GuessLetterStack(5)
-                drawTileChars(guessLetterStack, currRowObj)
-                smallNotify("Not a real word.")
             }
         }
     }

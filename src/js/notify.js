@@ -10,7 +10,6 @@ export function smallNotify(message) {
 function notifyPlayer(message, color) {
     let popupMessageElement = document.getElementById('popup-message')
     popupMessageElement.textContent = message;
-    console.log("Setting bg col to: " + color)
     popupMessageElement.style.color = color
     document.getElementById('popup').style.display = 'flex';
 }

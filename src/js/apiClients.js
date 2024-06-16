@@ -14,7 +14,7 @@ export async function checkRealWord(guessWord) {
         if (!response.ok) {
             throw new Error("Fetch response wasn't ok")
         }
-        const data = await response.json();
+        let data = await response.json();
         return data.isreal;
 
     } catch (error) {
