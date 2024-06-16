@@ -2,7 +2,7 @@ import GuessLetterStack from '/src/js/guessLetterStack.js';
 import { handleKeyEvent } from '/src/js/keypressUtils.js';
 import { drawTileChars, drawTileColors } from '/src/js/tileUtils.js';
 import { checkRealWord, checkWin } from '/src/js/apiClients.js'
-import { smallNotify, notifyPlayer } from '/src/js/notify.js';
+import { smallNotify, notifyPlayerWin, notifyPlayerLoss } from '/src/js/notify.js';
 import { drawLetterColors } from '/src/js/keypadUtils.js';
 
 async function gameHandler() {
@@ -40,9 +40,9 @@ async function gameHandler() {
         }
     }
     if (win == true) {
-        notifyPlayer("You won!")
+        notifyPlayerWin()
     } else {
-        notifyPlayer("You lost!")
+        notifyPlayerLoss()
     }
 }
 

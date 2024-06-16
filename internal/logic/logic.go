@@ -1,21 +1,27 @@
 package logic
 
 import (
-    "log"
-    "os"
-    "bufio"
-    "strings"
-    "math/rand"
-    "fmt"
+	"bufio"
+	"fmt"
+	"log"
+	"math/rand"
+	"os"
+	"strings"
+	"time"
 
-    "main/internal/types"
+	"main/internal/types"
+    "main/internal/config"
 )
 
 var answer string
-const WordFile string =  "../data/words.txt"
 
 func CheckRealWord(clientWord string) (bool, error){
-    wordFile, err := os.Open(WordFile)
+    cfg, err := config.GetConfig()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    wordFile, err := os.Open(cfg.Words.Path)
     if err != nil {
         return false, fmt.Errorf("Cannot open wordfile: %v", err)
     }
@@ -30,6 +36,17 @@ func CheckRealWord(clientWord string) (bool, error){
     return false, nil
 }
 
+// Runs the SetRandomWord method according to
+// set interval.
+func SetRandomWordLoop(interval int) {
+    for {
+        SetRandomWord()
+        nextTime := time.Now().Add(time.Duration(interval) * time.Hour)
+        duration := nextTime.Sub(time.Now())
+        time.Sleep(duration)
+    }
+}
+
 func SetRandomWord() {
     words, err := GetWords()
     if err != nil {
@@ -40,7 +57,12 @@ func SetRandomWord() {
 }
 
 func GetWords() ([]string, error) {
-    wordFile, err := os.Open(WordFile)
+    cfg, err := config.GetConfig()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    wordFile, err := os.Open(cfg.Words.Path)
     if err != nil {
         return nil, fmt.Errorf("GetWords | Cannot open wordfile: %v", err)
     }

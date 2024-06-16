@@ -4,7 +4,7 @@ export async function checkRealWord(guessWord) {
         guess: guessWord
     }
     try {
-        const response = await fetch('https://wowdrel.alepablog.com/realWord', {
+        const response = await fetch('/realWord', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -30,7 +30,7 @@ export async function checkWin(guessWord) {
         guess: guessWord
     }
     try {
-        const response = await fetch('https://wowdrel.alepablog.com/guess', {
+        const response = await fetch('/guess', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

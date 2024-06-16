@@ -20,3 +20,8 @@ type RealWordResponse struct {
     Version int `json:"version"`
     IsReal bool `json:"isreal"`
 }
+
+type ServerConfigResponse struct {
+    Version int `json:"version"`
+    ServerEndPoint string `json:"serverendpoint"`
+}
