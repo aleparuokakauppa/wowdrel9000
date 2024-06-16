@@ -1,14 +1,24 @@
 package logic
 
 import (
-    "log"
-    "os"
-    "bufio"
-    "strings"
-    "math/rand"
-    "fmt"
+	"bufio"
+	"context"
+	"fmt"
+	"log"
+	"math/rand"
+	"os"
+	"strings"
+	"time"
 
-    "main/internal/types"
+	"main/internal/db"
+	"main/internal/types"
+    "main/internal/handlers"
+
+    /* TODO break the import cycle with refactoring */
+
+    "go.mongodb.org/mongo-driver/bson"
+    "go.mongodb.org/mongo-driver/mongo"
+    "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var answer string
@@ -30,6 +40,17 @@ func CheckRealWord(clientWord string) (bool, error){
     return false, nil
 }
 
+// Runs the SetRandomWord method according to
+// set interval.
+func SetRandomWordLoop(interval int) {
+    for {
+        SetRandomWord()
+        nextTime := time.Now().Add(time.Duration(interval) * time.Hour)
+        duration := nextTime.Sub(time.Now())
+        time.Sleep(duration)
+    }
+}
+
 func SetRandomWord() {
     words, err := GetWords()
     if err != nil {
@@ -40,6 +61,20 @@ func SetRandomWord() {
 }
 
 func GetWords() ([]string, error) {
+    configClient, err := handlers.GetConfig()
+    if err != nil {
+        return []string{}, err
+    }
+
+    ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configClient.Server.WordRotateInterval) * time.Second)
+    defer cancel()
+
+    dbClient, err := db.GetMongoClient(ctx)
+    if err != nil {
+        return []string{}, err
+    }
+
+
     wordFile, err := os.Open(WordFile)
     if err != nil {
         return nil, fmt.Errorf("GetWords | Cannot open wordfile: %v", err)

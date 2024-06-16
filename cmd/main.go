@@ -3,14 +3,21 @@ package main
 import (
 	"log"
 	"net/http"
+    "fmt"
 
     "main/internal/handlers"
     "main/internal/logic"
 )
 
 func main() {
-    port := ":8080"
-    logic.SetRandomWord()
+    // Add check that looks at CWD
+    // It has to be the root of the project
+    config, err := handlers.GetConfig()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    port := fmt.Sprintf(":%d", config.Server.Port)
 
     http.HandleFunc("/", handlers.MainPageHandler)
     http.HandleFunc("/guess", handlers.GuessHandler)
