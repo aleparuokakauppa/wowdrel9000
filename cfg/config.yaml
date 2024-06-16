@@ -3,4 +3,4 @@ server:
   WordRotateInterval: 24
 
 words:
-  path: "/Users/alepa/Coding/Projects/wowdrel9000/data/words.txt"
+  path: "/home/alepa/Coding/Projects/wowdrel9000/data/words.txt"
