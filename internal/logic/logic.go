@@ -2,7 +2,6 @@ package logic
 
 import (
 	"bufio"
-	"context"
 	"fmt"
 	"log"
 	"math/rand"
@@ -10,22 +9,19 @@ import (
 	"strings"
 	"time"
 
-	"main/internal/db"
 	"main/internal/types"
-    "main/internal/handlers"
-
-    /* TODO break the import cycle with refactoring */
-
-    "go.mongodb.org/mongo-driver/bson"
-    "go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/mongo/options"
+    "main/internal/config"
 )
 
 var answer string
-const WordFile string =  "../data/words.txt"
 
 func CheckRealWord(clientWord string) (bool, error){
-    wordFile, err := os.Open(WordFile)
+    cfg, err := config.GetConfig()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    wordFile, err := os.Open(cfg.Words.Path)
     if err != nil {
         return false, fmt.Errorf("Cannot open wordfile: %v", err)
     }
@@ -61,21 +57,12 @@ func SetRandomWord() {
 }
 
 func GetWords() ([]string, error) {
-    configClient, err := handlers.GetConfig()
+    cfg, err := config.GetConfig()
     if err != nil {
-        return []string{}, err
+        log.Fatal(err)
     }
 
-    ctx, cancel := context.WithTimeout(context.Background(), time.Duration(configClient.Server.WordRotateInterval) * time.Second)
-    defer cancel()
-
-    dbClient, err := db.GetMongoClient(ctx)
-    if err != nil {
-        return []string{}, err
-    }
-
-
-    wordFile, err := os.Open(WordFile)
+    wordFile, err := os.Open(cfg.Words.Path)
     if err != nil {
         return nil, fmt.Errorf("GetWords | Cannot open wordfile: %v", err)
     }

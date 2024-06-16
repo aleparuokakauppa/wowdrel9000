@@ -1,0 +1,6 @@
+server:
+  Port: 8080
+  WordRotateInterval: 24
+
+words:
+  path: "/Users/alepa/Coding/Projects/wowdrel9000/data/words.txt"

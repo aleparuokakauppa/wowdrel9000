@@ -11,7 +11,7 @@ import (
 )
 
 func MainPageHandler(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, "../src/index.html")
+    http.ServeFile(w, r, "./src/index.html")
 }
 
 func GuessHandler(w http.ResponseWriter, r *http.Request) {
