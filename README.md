@@ -1,6 +1,10 @@
 # wowdrel9000
 A wordle clone
 
+
+## Screenshot
+![Screenshot](https://github.com/aleparuokakauppa/wowdrel9000/blob/main/data/screenshot.jpg?raw=true)
+
 ## Server API docs
 **Endpoint**: `/guess`
 **Method**: `POST`
