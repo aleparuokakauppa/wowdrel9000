@@ -70,5 +70,24 @@ async function gameHandler() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Virtual keyboard init
+    function simulateKeyPress(key) {
+        return new KeyboardEvent('keydown', { key });
+    }
+
+    document.querySelectorAll('.key-item').forEach(button => {
+        button.addEventListener('click', () => {
+            const key = button.textContent;
+            document.dispatchEvent(simulateKeyPress(key))
+        })
+    })
+
+    document.querySelectorAll('.key-item-wide').forEach(button => {
+        button.addEventListener('click', () => {
+            const key = button.getAttribute('key-data');
+            document.dispatchEvent(simulateKeyPress(key))
+        })
+    })
+
     gameHandler();
 });
